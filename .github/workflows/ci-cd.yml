@@ -39,6 +39,6 @@ jobs:
         run: |
           echo "$SSH_KEY" > deploy_key
           chmod 600 deploy_key
-          rsync -avz -e "ssh -i deploy_key -o StrictHostKeyChecking=no" \
+          rsync -avz --no-perms --omit-dir-times -e "ssh -i deploy_key -o StrictHostKeyChecking=no" \
           dist/basic_app/ supra@supra.mab.cl:/var/www/basic_app/
         shell: bash
