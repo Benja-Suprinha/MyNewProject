@@ -1,0 +1,44 @@
+name: CI/CD for Angular Project
+
+# Configura cuándo se ejecutará el flujo de trabajo
+on:
+  push:
+    branches:
+      - main  # Cambia 'main' si usas otra rama principal
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Checkout the code from the repository
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      # Step 2: Setup Node.js environment
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '18'  # Usa la versión de Node.js que tu proyecto necesita
+
+      # Step 3: Install dependencies
+      - name: Install dependencies
+        run: npm install
+
+      # Step 4: Build Angular app
+      - name: Build Angular app
+        run: npm run build --if-present
+
+      # Step 5: Deploy to Server
+      - name: Deploy to Server
+        env:
+          SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
+        run: |
+          echo "$SSH_KEY" > deploy_key
+          chmod 600 deploy_key
+          rsync -avz -e "ssh -i deploy_key -o StrictHostKeyChecking=no" \
+          dist/basic_app/ supra@supra.mab.cl:/var/www/basic_app/
+        shell: bash
