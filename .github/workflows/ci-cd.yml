@@ -4,7 +4,7 @@ name: CI/CD for Angular Project
 on:
   push:
     branches:
-      - main  # Cambia 'main' si usas otra rama principal
+      - main  # Cada vez que pasa algo en main ...
   pull_request:
     branches:
       - main
